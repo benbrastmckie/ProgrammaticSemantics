@@ -1,0 +1,153 @@
+\documentclass[a4paper, 11pt]{article} % Font size (can be 10pt, 11pt or 12pt) and paper size (remove a4paper for US letter paper)
+
+\usepackage[protrusion=true,expansion=true]{microtype} % Better typography
+\usepackage{graphicx} % Required for including pictures
+\usepackage{wrapfig} % Allows in-line images
+\usepackage{enumitem} %%Enables control over enumerate and itemize environments
+\usepackage{setspace}
+\usepackage{amssymb, amsmath, mathrsfs,mathabx} %%Math packages
+\usepackage{stmaryrd}
+\usepackage{mathtools}
+\usepackage{multicol} 
+\usepackage{mathpazo} % Use the Palatino font
+\usepackage[T1]{fontenc} % Required for accented characters
+\usepackage{array}
+\usepackage{bibentry}
+\usepackage[dvipsnames]{xcolor}  % Color support
+
+%% ========== Hyperlinks (load last) ==========
+
+\usepackage[
+    linktocpage=true,
+    pdfusetitle
+]{hyperref}
+
+% Configure hyperlink colors
+\definecolor{URLblue}{RGB}{0,0,150}
+\hypersetup{
+    colorlinks   = true,         % Use colored links instead of boxes
+    urlcolor     = URLblue,      % Color for external hyperlinks
+    linkcolor    = URLblue,      % Color of internal links
+    citecolor    = black          % Color of citations
+}
+
+%%% CITATIONS %%%
+% \usepackage{bibentry} %%Replace \bibliography{} with \nobibliography{} for no bib
+\usepackage[round]{natbib} %%Or change 'round' to 'square' for square backers
+\setcitestyle{aysep={}}
+ %   \citet{key} ==>>                Jones et al. (1990)
+ %   \citet*{key} ==>>               Jones, Baker, and Smith (1990)
+ %   \citep{key} ==>>                (Jones et al., 1990)
+ %   \citep*{key} ==>>               (Jones, Baker, and Smith, 1990)
+ %   \citep[chap. 2]{key} ==>>       (Jones et al., 1990, chap. 2)
+ %   \citep[e.g.][]{key} ==>>        (e.g. Jones et al., 1990)
+ %   \citep[e.g.][p. 32]{key} ==>>   (e.g. Jones et al., p. 32)
+ %   \citeauthor{key} ==>>           Jones et al.
+ %   \citeauthor*{key} ==>>          Jones, Baker, and Smith
+ %   \citeyear{key} ==>>             1990
+\usepackage{etoolbox} %%For \citepos
+\usepackage{xstring} %%For \citepos
+
+\makeatletter %definition of \citepos
+% \patchcmd{\NAT@test}{\else \NAT@nm}{\else \NAT@nmfmt{\NAT@nm}}{}{} %turn on for numeric citations
+\DeclareRobustCommand\citepos% define \citepos
+  {\begingroup
+   \let\NAT@nmfmt\NAT@posfmt% same as for citet except with a different name format
+   \NAT@swafalse\let\NAT@ctype\z@\NAT@partrue
+   \@ifstar{\NAT@fulltrue\NAT@citetp}{\NAT@fullfalse\NAT@citetp}
+  }
+   
+\let\NAT@orig@nmfmt\NAT@nmfmt %makes adapt to last names ending with an 's'.
+\def\NAT@posfmt#1{%
+  \StrRemoveBraces{#1}[\NAT@temp]%
+  \IfEndWith{\NAT@temp}{s}
+    {\NAT@orig@nmfmt{#1'}}
+    {\NAT@orig@nmfmt{#1's}}}
+\makeatother
+
+\newcommand{\corner}[1]{\ulcorner#1\urcorner} %%Corner quotes
+\newcommand{\tuple}[1]{\langle#1\rangle} %%Angle brackets
+\newcommand{\set}[1]{\lbrace#1\rbrace} %%Set brackets
+\newcommand{\abs}[1]{|#1|} %%Set brackets
+\newcommand{\interpret}[1]{\llbracket#1\rrbracket} %%Double brackets
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+
+\makeatletter
+\renewcommand\@biblabel[1]{\textbf{#1.}} % Change the square brackets for each bibliography item from '[1]' to '1.'
+\renewcommand{\@listI}{\itemsep=0pt} % Reduce the space between items in the itemize and enumerate environments and the bibliography
+
+\renewcommand{\maketitle}{ % Customize the title - do not edit title and author name here, see the TITLE block below
+\begin{flushright} % Right align
+{\LARGE\@title} % Increase the font size of the title
+
+\vspace{10pt} % Some vertical space between the title and author name
+
+{\@author} % Author name
+\\\@date % Date
+
+\vspace{30pt} % Some vertical space between the author block and abstract
+\end{flushright}
+}
+
+%----------------------------------------------------------------------------------------
+%	TITLE
+%----------------------------------------------------------------------------------------
+
+\title{\textbf{Programmatic Truthmaker Semantics}} % Subtitle
+
+\author{\textsc{Advances in Truthmaker Semantics: II}\\ % Topic
+  \em Benjamin Brast-McKie and  % Author
+  Miguel Buitrago  % Author
+} 
+
+\date{\today} % Date
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\maketitle % Print the title section
+
+\thispagestyle{empty}
+
+%----------------------------------------------------------------------------------------
+
+\nocite{Brast-McKieforthcoming}
+
+\vspace{-50pt}
+
+\section*{\it Abstract}
+
+I demonstrate in Brast-McKie (\href{https://github.com/benbrastmckie/ModelChecker/blob/master/Counterfactuals.pdf}{forthcoming}) how to define \citepos{Fine2012a,Fine2012b} imposition relation in terms of the primitives that \cite{Fine2017d,Fine2017,Fine2017a} includes in a modalized state space to provide a logic for counterfactual conditionals which is at least strong.
+The second half of the paper extends the resulting truthmaker semantics to accommodate tense operators by introducing a primitive \textit{task relation} in terms of which the possible states, world states, and world histories may then be defined.
+
+This talk presents these additions to Fine's truthmaker semantics as case studies of a \textit{programmatic methodology} which makes use of the \href{https://pypi.org/project/model-checker/}{\texttt{model-checker}} software that I developed with Miguel Buitrago alongside this project.\footnote{\texttt{https://pypi.org/project/model-checker/}}
+After presenting the semantics using traditional model theory in the first part of the talk, I will demonstrate the utility of implementing a semantics using the model-checker in order to find finite countermodels and establish logical consequences up to a user defined limit 2$^\texttt{N}$ on the size of models.
+
+By ruling out finite countermodels smaller than 2$^\texttt{N}$, the \texttt{model-checker} provides evidence that a logical consequence under consideration has no countermodels.
+Rather than a substitute for working in traditional model theory, implementing a programmatic semantics with the \texttt{model-checker} greatly eases the process of prototyping new semantic theories and making novel additions to existing theories.
+In addition to allowing user to rapidly explore the extension of the semantic theories that they implement, the \texttt{model-checker} provides resources for easily uploading semantic systems to the \texttt{TheoryLib}, providing access for other users to explore.
+
+Implementations are also modular and easy to combine and compare, allowing users to survey the interactions in languages with many different operators at no extra computational cost.
+Moreover, the \textit{computability} of a semantics provides an objective measure on the complexity of a theory which may be weighed alongside other theoretical virtues.
+
+Although the \texttt{model-checker} is a general purpose utility for working in semantics, applications in truthmaker semantics are particularly natural given the increased complexity of these semantic systems. 
+Rather than a deficiency, I will characterize well-motivated forms of theoretical complexity as a sign of the maturity of semantics as a discipline.
+It is in support of both the future development and accessibility of truthmaker semantics that the \texttt{model-checker} aims to make a contribution.
+
+
+
+
+
+
+\vfill
+
+\bibliographystyle{Phil_Review} %%bib style found in bst folder, in bibtex folder, in texmf folder.
+\bibliography{Zotero} %%bib database found in bib folder, in bibtex folder
+
+
+\end{document}
