@@ -25,7 +25,7 @@
 
 %%\documentclass[sn-basic]{sn-jnl}% Basic Springer Nature Reference Style/Chemistry Reference Style
 
-%%Note: the following reference styles support Namedate and Numbered referencing. By default the style follows the most common style. To switch between the options you can add or remove “Numbered” in the optional parenthesis. 
+%%Note: the following reference styles support Namedate and Numbered referencing. By default the style follows the most common style. To switch between the options you can add or remove ï¿½Numberedï¿½ in the optional parenthesis. 
 %%The option is available for: sn-basic.bst, sn-chicago.bst%  
  
 %%\documentclass[pdflatex,sn-nature]{sn-jnl}% Style for submissions to Nature Portfolio journals
@@ -91,6 +91,8 @@
 
 \author{\fnm{Benjamin} \sur{Brast-McKie}}\email{brastmck@mit.edu}
 
+\author{\fnm{Miguel} \sur{Buitrago}}\email{miguel.buitrago@example.com}
+
 % \author[2,3]{\fnm{Second} \sur{Author}}\email{iiauthor@gmail.com}
 % \equalcont{These authors contributed equally to this work.}
 %
@@ -108,20 +110,7 @@
 %%==================================%%
 
 \abstract{
-  This talk presents a \textit{programmatic methodology} which uses the \href{https://pypi.org/project/model-checker/}{\texttt{model-checker}} software that I developed to rapidly prototype semantic theories.
-
-  I will begin by presenting a standard methodology in philosophical logic to highlight a number of shortcomings which motivate the programmatic methodology.
-  I will then introduce the \texttt{model-checker} which draws on the SMT solver Z3 to rule out finite countermodels of a user specified size, providing evidence that a logical consequences has no countermodels if in fact there are none.
-  Implementing a programmatic semantics with the \texttt{model-checker} extends the standard methodology by easing the process of exploring and prototyping novel semantic theories. %, making novel additions to existing semantic theories, and combing compatible semantic theories.
-
-  In addition to facilitating the study of complex semantic theories, the \texttt{model-checker} provides resources for uploading semantic theories to the \texttt{TheoryLib} to facilitate collaboration.
-  Programmatic semantic theories are also modular, making them easy to combine and compare, allowing users to survey the interactions in languages with many operators.
-  Moreover, the computability of a semantic theory provides an objective measure that may be weighed alongside other theoretical virtues.
-
-  Although the \texttt{model-checker} is a general purpose utility for working in semantics, applications in hyperintensional semantics are particularly natural given the increased complexity of these semantic systems. 
-  Rather than a deficiency, I will characterize well-motivated forms of theoretical complexity as a sign of the maturity of semantics as a discipline.
-  It is in support of both the future development and accessibility of semantics that the \texttt{model-checker} aims to make a contribution.
-  The talk will conclude with a brief demonstration to make the workflow concrete.
+  Semantic theory development traditionally relies on hand-verified proofs and countermodels, limiting the range of inferences that can be validated as theories grow in complexity. This paper presents ModelChecker, a computational framework that treats semantic theories as executable programs, enabling systematic model exploration through SMT constraint solving. The framework provides theory-agnostic infrastructure for implementing diverse semantic frameworks, from intensional to hyperintensional approaches, with compositional modularity allowing selective operator loading and systematic reuse. We demonstrate the framework's capabilities by: (1) comparing the Logos semantics for counterfactual conditionals to Fine's imposition semantics and comparing; and (2) comparing the Logos semantics for negation to Bernard and Champollion's exclusion semantics for negation. A systematic methodology enables controlled theory benchmarking, revealing that the arity of semantic primitives dominates other parameters in determining the computability of a semantic theory. The ModelChecker includes the TheoryLib for sharing semantic theories in a standardized format. This paper represents the first computational implementation of bilateral truthmaker semantics and establishes computational tractability as a measurable theoretical virtue alongside logical adequacy.
 }
 
 \keywords{Logic, Semantics, SMT Solvers, Z3}
@@ -133,7 +122,279 @@
 \maketitle
 
 \section{Introduction}
-  \label{sec:intro}
+\label{sec:intro}
+
+% Overview: Semantic theories as executable programs enabling systematic model exploration
+% Key thesis: Computational framework for empirical theory comparison and automated validation
+
+\subsection{The Challenge of Semantic Theory Development}
+\label{sec:challenge}
+
+% - Tension between expressive power and verification difficulty
+% - The Complexity Problem: Hand verification becomes intractable as theories grow
+% - The Comparison Problem: Informal theory comparison lacking empirical metrics
+% - The Tractability Problem: Computational complexity should inform semantic theory development
+
+\subsection{The Computational Turn in Semantics}
+\label{sec:computational-turn}
+
+% - SMT solvers as natural extension for semantic model exploration
+% - Prior work: Automated theorem proving, model checking, general-purpose reasoning tools
+% - The gap: Need for theory-agnostic framework supporting diverse semantic theories
+% - Advantage of SMT over first-order encodings: Bitvectors, uninterpreted functions, arithmetic
+
+\subsection{Contributions: A Programmatic Framework for Semantic Theory Development}
+\label{sec:contributions}
+
+% Contribution 1: Theory-agnostic architecture (plugin system for semantics)
+% Contribution 2: Compositional modularity (operators as composable modules)
+% Contribution 3: Systematic comparative methodology (controlled empirical benchmarking)
+% Contribution 4: Bounded model exploration (finite model search with isomorphism detection)
+% Contribution 5: TheoryLib (extensible library with 4 frameworks, 177+ examples)
+% Contribution 6: Computational complexity as theoretical virtue (arity predicts tractability)
+% Paper structure overview
+
+\section{Complete Pipeline Architecture}
+\label{sec:pipeline}
+
+% Overview: Transformation from logical arguments to validity determinations
+% Theory-agnostic design with theory-specific plugins
+
+\subsection{Input Specification and Configuration}
+\label{sec:input}
+
+% - Argument structure: premises, conclusions, settings
+% - Multi-theory evaluation architecture
+% - Semantic search space control
+
+\subsection{Logical Processing Pipeline}
+\label{sec:processing}
+
+% Stage 1: Syntactic parsing (structure without semantics)
+% Stage 2: Semantic constraint generation (four categories: frame, model, premise, conclusion)
+% Stage 3: SMT solving (bounded model checking with Z3)
+% Stage 4: Model iteration (multiple countermodels with isomorphism detection)
+
+\subsection{Output Generation and Interpretation}
+\label{sec:output}
+
+% - Validity reporting (evidence vs. proof distinction)
+% - Countermodel visualization (theory-specific formats)
+% - Comparative analysis (systematic cross-theory data)
+% - Multiple output formats (console, JSON, Jupyter, Markdown)
+
+\section{Modular Operator Classes}
+\label{sec:modularity}
+
+% Overview: Self-contained operators encapsulating syntax, semantics, and presentation
+% Enables theory composition and systematic reuse
+
+\subsection{Three-Layer Operator Architecture}
+\label{sec:operator-architecture}
+
+% Layer 1: Syntactic recognition (arity, LaTeX code, prefix conversion)
+% Layer 2: Semantic interpretation (theory-specific constraint generation)
+%   - Extensional: no contextual parameters
+%   - Intensional: single parameter (worlds/states/times)
+%   - Bimodal: two parameters (world-history and time)
+%   - Normative: additional utility/preference parameters
+% Layer 3: Model interpretation (solver values to readable semantic structures)
+
+\subsection{Subtheory Composition and Modular Loading}
+\label{sec:subtheory-composition}
+
+% - Theories as compositions of operator subtheories
+% - Selective loading for language fragments
+% - Automatic dependency resolution
+
+\subsection{Semantic Framework Patterns and Operator Responsibilities}
+\label{sec:semantic-patterns}
+
+% - Intensional semantics pattern (evaluation at points in structured space)
+% - Bimodal semantics pattern (coordinating multiple evaluation dimensions)
+% - Hyperintensional semantics pattern (verification/falsification at partial states)
+% - Defined operator abstraction (notational convenience without semantic complexity)
+
+\section{Systematic Comparative Methodology}
+\label{sec:comparison}
+
+% Overview: Empirical theory comparison through controlled experiments
+% Replaces informal assessments with reproducible measurements
+
+\subsection{Comparative Framework Design}
+\label{sec:comparative-design}
+
+% - Multi-theory evaluation protocol (identical inputs, identical configuration)
+% - Experimental control as methodological innovation
+% - Standardized conditions for evidence-based evaluation
+
+\subsection{Empirical Complexity Metrics}
+\label{sec:complexity-metrics}
+
+% Metrics collected:
+%   - Validation outcomes (valid vs. invalid determinations)
+%   - Solve times (milliseconds)
+%   - Timeout rates (percentage exceeding bounds)
+%   - Maximum tractable domain size
+%   - Constraint counts
+% Theoretical vs. empirical complexity alignment
+
+\subsection{Cross-Theory Validation Patterns}
+\label{sec:validation-patterns}
+
+% - Agreement: semantic universals independent of framework
+% - Divergence: theoretical commitments revealed through invalidation differences
+% - Comparison as empirical investigation with answerable questions
+
+\subsection{Setting Up Complexity Analysis}
+\label{sec:complexity-setup}
+
+% - Empirical observations motivate explanatory questions
+% - Preview of arity-complexity thesis (developed in Section 6)
+% - Progression from comparative observation to theoretical analysis
+
+\section{Model Exploration and Bounded Search}
+\label{sec:model-exploration}
+
+% Overview: Systematic exploration through configurable constraints
+% Iterative countermodel discovery with structural distinctness
+
+\subsection{Hierarchical Configuration and Research Flexibility}
+\label{sec:hierarchical-config}
+
+% - Multi-level configuration hierarchy (framework, theory, user, example, command-line)
+% - Balancing global defaults with local overrides
+% - Distinction between theory-constitutive and investigative constraints
+
+\subsection{Constraint Composition and Interaction}
+\label{sec:constraint-composition}
+
+% - Compositional constraint building (contingency, disjointness, etc.)
+% - Constraint interactions and redundancy elimination
+% - Mirrors incremental theoretical practice
+
+\subsection{Countermodel Discovery and Iteration}
+\label{sec:countermodel-iteration}
+
+% - Model iteration problem: avoiding label variants
+% - Constraint-based exclusion strategy
+% - Isomorphism challenge and graph-based detection
+
+\subsection{Isomorphism Detection and Structural Distinctness}
+\label{sec:isomorphism}
+
+% - Two-stage strategy: cheap structural checks then expensive full isomorphism
+% - Performance optimization for common case
+% - Methodological applications: diversity assessment, structural comparison, minimal countermodels
+
+\subsection{Termination and Search Space Boundaries}
+\label{sec:termination}
+
+% Termination conditions:
+%   - Successful completion (requested models found)
+%   - Resource exhaustion (timeout)
+%   - Search space exhausted (no more satisfying assignments)
+%   - Heuristic exhaustion (consecutive isomorphism failures)
+% Epistemic status varies by termination reason
+
+\section{Computational Complexity and Primitive Arity}
+\label{sec:complexity}
+
+% Overview: Primitive arity determines tractability boundaries
+% Theoretical and practical significance for semantic theory design
+
+\subsection{Semantic Primitives and Model Space}
+\label{sec:primitives}
+
+% - Semantic primitives: fundamental Z3 functions/relations
+% - Examples from TheoryLib: possible(x), verify(x,p), falsify(x,p), excludes(x,y), imposition(x,w,u)
+% - Model space size: 2^(D^k Ã— P^h) where k = state arguments, h = sentence letter arguments
+% - Primitive arity as dominant factor (exponential scaling)
+
+\subsection{Frame Constraints and the Pruning-Complexity Tradeoff}
+\label{sec:frame-constraints}
+
+% - Pruning benefit: constraint propagation eliminates invalid assignments
+% - Complexity cost: memory consumption, propagation overhead, coupling
+% - Memory explosion: catastrophic failure for high-arity primitives
+% - Conclusion: frame constraints compound with primitive arity
+
+\subsection{The Primitive Count Tradeoff: Logos vs. Exclusion}
+\label{sec:primitive-count}
+
+% - Logos: more primitives (3), simple semantics, simple frame constraints
+% - Exclusion: fewer primitives (2), complex semantics, proliferating frame constraints
+% - Argument domains matter: excludes(x,y) creates larger model space than falsify(x,p)
+% - Conclusion: primitive arity dominates primitive count
+
+\subsection{Empirical Performance Data and Arity Effects}
+\label{sec:empirical-data}
+
+% TODO: Conduct systematic empirical comparison
+% - Test suite design (15-20 representative inferences)
+% - Domain size sweep (N = 4 to 20)
+% - Metrics: solve time, timeout rate, memory, constraint count
+% - Performance tiers: Tier 1 (binary primitives) vs. Tier 2-3 (ternary primitives)
+% - Expected results: similar Tier 1 performance, dramatic Tier 2-3 degradation
+
+\subsection{Conclusion: The Dominance of Primitive Arity}
+\label{sec:arity-conclusion}
+
+% TODO: Populate with specific tractability numbers after empirical testing
+% - Central finding: k (state arguments) dominates complexity
+% - Complexity hierarchy: primary (arity), secondary (frame constraints), tertiary (primitive count)
+% - Design implications: minimize k for tractability
+% - Transforms tractability from empirical surprise to design criterion
+
+\section{Conclusion: TheoryLib and Collaborative Semantic Theory Development}
+\label{sec:conclusion}
+
+% Overview: Framework contributions and vision for collaborative semantics
+% TheoryLib as shared repository enabling reproducibility and cumulative progress
+
+\subsection{TheoryLib: A Shared Repository for Semantic Theories}
+\label{sec:theorylib}
+
+% - TheoryLib as proof assistant library for semantics
+% - Current coverage: 4 theories, 177+ examples
+% - Benefits: reproducibility, direct comparison, educational use, theory reuse
+% - Future expansion: epistemic, normative, causal, dynamic, hybrid approaches
+
+\subsection{Testing and Adapting Existing Theories}
+\label{sec:testing-theories}
+
+% Basic workflow:
+%   1. Select theory
+%   2. Specify argument
+%   3. Configure settings
+%   4. Run validation
+%   5. Interpret results
+
+\subsection{Implementing New Semantic Theories}
+\label{sec:implementing-theories}
+
+% Step-by-step methodology:
+%   Step 1: Design semantic primitives (minimize k)
+%   Step 2: Implement semantic clauses (three-layer architecture)
+%   Step 3: Specify frame constraints (balance pruning vs. complexity)
+%   Step 4: Create example suite (positive and negative tests)
+%   Step 5: Documentation and contribution
+
+\subsection{A Methodology for Computational Formal Semantics}
+\label{sec:methodology}
+
+% - Theory development cycle: implement, test, refine, compare, iterate
+% - Empirical validation: standardized test suites across theories
+% - Educational applications: interactive exploration
+% - Reproducibility and cumulative progress
+
+\subsection{Future Directions}
+\label{sec:future}
+
+% - Expanding TheoryLib coverage
+% - Advancing computational methods (solver optimization, theorem prover integration, ML assistance)
+% - Transforming semantic methodology (complexity as adequacy criterion, reproducibility standards)
+% - Invitation to contribute to collaborative platform
 
 
 
