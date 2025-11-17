@@ -1,0 +1,197 @@
+\documentclass[a4paper, 11pt]{article} % Font size (can be 10pt, 11pt or 12pt) and paper size (remove a4paper for US letter paper)
+
+\usepackage[protrusion=true,expansion=true]{microtype} % Better typography
+\usepackage{graphicx} % Required for including pictures
+\usepackage{wrapfig} % Allows in-line images
+\usepackage{enumitem} %%Enables control over enumerate and itemize environments
+\usepackage{setspace}
+\usepackage{amssymb, amsmath, mathrsfs,mathabx} %%Math packages
+\usepackage{stmaryrd}
+\usepackage{mathtools}
+\usepackage{multicol} 
+\usepackage{mathpazo} % Use the Palatino font
+\usepackage[T1]{fontenc} % Required for accented characters
+\usepackage{array}
+\usepackage{bibentry}
+\usepackage[dvipsnames]{xcolor}  % Color support
+
+%% ========== Hyperlinks (load last) ==========
+
+\usepackage[
+    linktocpage=true,
+    pdfusetitle
+]{hyperref}
+
+% Configure hyperlink colors
+\definecolor{URLblue}{RGB}{0,0,150}
+\hypersetup{
+    colorlinks   = true,         % Use colored links instead of boxes
+    urlcolor     = URLblue,      % Color for external hyperlinks
+    linkcolor    = URLblue,      % Color of internal links
+    citecolor    = black          % Color of citations
+}
+
+%%% CITATIONS %%%
+% \usepackage{bibentry} %%Replace \bibliography{} with \nobibliography{} for no bib
+\usepackage[round]{natbib} %%Or change 'round' to 'square' for square backers
+\setcitestyle{aysep={}}
+ %   \citet{key} ==>>                Jones et al. (1990)
+ %   \citet*{key} ==>>               Jones, Baker, and Smith (1990)
+ %   \citep{key} ==>>                (Jones et al., 1990)
+ %   \citep*{key} ==>>               (Jones, Baker, and Smith, 1990)
+ %   \citep[chap. 2]{key} ==>>       (Jones et al., 1990, chap. 2)
+ %   \citep[e.g.][]{key} ==>>        (e.g. Jones et al., 1990)
+ %   \citep[e.g.][p. 32]{key} ==>>   (e.g. Jones et al., p. 32)
+ %   \citeauthor{key} ==>>           Jones et al.
+ %   \citeauthor*{key} ==>>          Jones, Baker, and Smith
+ %   \citeyear{key} ==>>             1990
+\usepackage{etoolbox} %%For \citepos
+\usepackage{xstring} %%For \citepos
+
+\makeatletter %definition of \citepos
+% \patchcmd{\NAT@test}{\else \NAT@nm}{\else \NAT@nmfmt{\NAT@nm}}{}{} %turn on for numeric citations
+\DeclareRobustCommand\citepos% define \citepos
+  {\begingroup
+   \let\NAT@nmfmt\NAT@posfmt% same as for citet except with a different name format
+   \NAT@swafalse\let\NAT@ctype\z@\NAT@partrue
+   \@ifstar{\NAT@fulltrue\NAT@citetp}{\NAT@fullfalse\NAT@citetp}
+  }
+   
+\let\NAT@orig@nmfmt\NAT@nmfmt %makes adapt to last names ending with an 's'.
+\def\NAT@posfmt#1{%
+  \StrRemoveBraces{#1}[\NAT@temp]%
+  \IfEndWith{\NAT@temp}{s}
+    {\NAT@orig@nmfmt{#1'}}
+    {\NAT@orig@nmfmt{#1's}}}
+\makeatother
+
+\newcommand{\corner}[1]{\ulcorner#1\urcorner} %%Corner quotes
+\newcommand{\tuple}[1]{\langle#1\rangle} %%Angle brackets
+\newcommand{\set}[1]{\lbrace#1\rbrace} %%Set brackets
+\newcommand{\abs}[1]{|#1|} %%Set brackets
+\newcommand{\interpret}[1]{\llbracket#1\rrbracket} %%Double brackets
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+
+\makeatletter
+\renewcommand\@biblabel[1]{\textbf{#1.}} % Change the square brackets for each bibliography item from '[1]' to '1.'
+\renewcommand{\@listI}{\itemsep=0pt} % Reduce the space between items in the itemize and enumerate environments and the bibliography
+
+\renewcommand{\maketitle}{ % Customize the title - do not edit title and author name here, see the TITLE block below
+\begin{flushright} % Right align
+{\LARGE\@title} % Increase the font size of the title
+
+\vspace{10pt} % Some vertical space between the title and author name
+
+{\@author} % Author name
+\\\@date % Date
+
+\vspace{30pt} % Some vertical space between the author block and abstract
+\end{flushright}
+}
+
+%----------------------------------------------------------------------------------------
+%	TITLE
+%----------------------------------------------------------------------------------------
+
+\title{\textbf{Programmatic Semantics}} % Subtitle
+
+\author{\textsc{Topos Institute}\\ % Topic
+  \em Benjamin Brast-McKie % Author
+} 
+
+\date{June 17, 2025} % Date
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\maketitle % Print the title section
+
+\thispagestyle{empty}
+
+%----------------------------------------------------------------------------------------
+
+\nocite{Brast-McKie2025}
+
+\vspace{-50pt}
+
+\section*{\it Abstract}
+
+This talk presents a \textit{programmatic methodology} which uses the \href{https://pypi.org/project/model-checker/}{\texttt{model-checker}} software that I developed to rapidly prototype semantic theories.
+
+I will begin by presenting a standard methodology in philosophical logic to highlight a number of shortcomings which motivate the programmatic methodology.
+I will then introduce the \texttt{model-checker} which draws on the SMT solver Z3 to rule out finite countermodels of a user specified size, providing evidence that a logical consequences has no countermodels if in fact there are none.
+Implementing a programmatic semantics with the \texttt{model-checker} extends the standard methodology by easing the process of exploring and prototyping novel semantic theories. %, making novel additions to existing semantic theories, and combing compatible semantic theories.
+
+In addition to facilitating the study of complex semantic theories, the \texttt{model-checker} provides resources for uploading semantic theories to the \texttt{TheoryLib} to facilitate collaboration.
+Programmatic semantic theories are also modular, making them easy to combine and compare, allowing users to survey the interactions in languages with many operators.
+Moreover, the computability of a semantic theory provides an objective measure that may be weighed alongside other theoretical virtues.
+
+Although the \texttt{model-checker} is a general purpose utility for working in semantics, applications in hyperintensional semantics are particularly natural given the increased complexity of these semantic systems. 
+Rather than a deficiency, I will characterize well-motivated forms of theoretical complexity as a sign of the maturity of semantics as a discipline.
+It is in support of both the future development and accessibility of semantics that the \texttt{model-checker} aims to make a contribution.
+The talk will conclude with a brief demonstration to make the workflow concrete.
+
+% SUMMARY
+% This talk presents a programmatic methodology that uses the model-checker to rapidly prototype modular semantic theories for the Logos. This approach leverages the Z3 SMT solver to automatically search for finite countermodels, providing evidence for logical consequences while making it easier to explore and combine complex semantic theories in a collaborative framework.
+
+
+\section*{\it Talk Outline}
+
+\begin{enumerate}
+  \item Introduction
+    \begin{itemize}
+      \item Background in formal and philosophical logic
+      \item Building hyperintensional (model-theoretic) semantic theories
+      \item Found myself prototyping with a standard methodology
+      \item Easy to make mistakes and hard to remember/trust old proofs
+      \item Logicians should be using computers
+    \end{itemize}
+  \item \texttt{model-checker}
+    \begin{itemize}
+      \item The project began focused on my theory of counterfactuals
+      \item Define Fine's modalized state spaces
+      \item Use bitvectors in Z3 to model finite state spaces
+      \item Grateful to Miguel Buitrago for his help during his UROP at MIT
+      \item State Fine's counterfactual semantics
+    \end{itemize}
+  \item Counterfactual Worlds
+    \begin{itemize}
+      \item Fine's theory languished under the homophonic objection
+      \item Define counterfactual worlds as an alternative
+      \item Finding countermodels in this semantics can be painful
+      \item This is motivates use of Z3 to find countermodels 
+      \item The model-checker provides translation, extraction, and testing
+    \end{itemize}
+  \item Programmatic Methodology
+    \begin{itemize}
+      \item Anatomy of a programmatic semantic theory in the \texttt{model-checker}
+      \item Building modular semantic clauses towards a unified semantics
+      \item Exploring interaction principles in expressive languages
+      \item The methodology is theory agnostic and community driven
+      \item Accessible to those focused on interaction and application
+    \end{itemize}  
+  \item \texttt{proof-checker}
+    \begin{itemize}
+      \item The \texttt{model-checker} extends the standard methodology
+      \item Provides evidence in support of logical consequences
+      \item Supports the development of an adequate proof theory
+      \item Remains to establish soundness and other metalogical results
+      \item The next phase of this project will do so in LEAN
+    \end{itemize}
+\end{enumerate}
+
+
+
+
+\vfill
+
+\bibliographystyle{Phil_Review} %%bib style found in bst folder, in bibtex folder, in texmf folder.
+\bibliography{Zotero} %%bib database found in bib folder, in bibtex folder
+
+
+\end{document}
