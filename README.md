@@ -30,7 +30,7 @@ ProgrammaticSemantics/
 
 ### Paper
 
-- **[Main Paper](paper/sn-article.tex)** ([PDF](paper/sn-article.pdf)) - Draft paper on programmatic semantics using the Springer Nature template
+- **[Main Paper](paper/sn-article.tex)** - Draft paper on programmatic semantics using the Springer Nature template
 
 ### Planning & Outline
 
